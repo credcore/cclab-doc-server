@@ -18,12 +18,12 @@ const key = process.env.MEILISEARCH_KEY;
 
 // Validate arguments
 if (!key) {
-  console.error('\u274c Error: MEILISEARCH_KEY environment variable is required');
+  console.error('❌ Error: MEILISEARCH_KEY environment variable is required');
   process.exit(1);
 }
 
 if (!docId) {
-  console.error('\u274c Error: Document ID is required');
+  console.error('❌ Error: Document ID is required');
   process.exit(1);
 }
 
@@ -42,7 +42,7 @@ const DOCS_INDEX = 'ftx_docs';
 // Delete document from document index
 async function deleteDocument() {
   try {
-    console.log(`\ud83d\uddd1\ufe0f Deleting document '${docId}' from ${DOCS_INDEX} index...`);
+    console.log(`🗑️ Deleting document '${docId}' from ${DOCS_INDEX} index...`);
     
     const response = await fetch(`${baseUrl}/indexes/${DOCS_INDEX}/documents/${docId}`, {
       method: 'DELETE',
@@ -50,24 +50,24 @@ async function deleteDocument() {
     });
     
     if (response.ok) {
-      console.log(`\u2705 Document deleted from ${DOCS_INDEX} index`);
+      console.log(`✅ Document deleted from ${DOCS_INDEX} index`);
     } else {
       const data = await response.json();
       if (data.message && data.message.includes('not found')) {
-        console.log(`\u2139\ufe0f Document '${docId}' not found in ${DOCS_INDEX} index`);
+        console.log(`ℹ️ Document '${docId}' not found in ${DOCS_INDEX} index`);
       } else {
-        console.error(`\u274c Error deleting document from ${DOCS_INDEX} index: ${data.message}`);
+        console.error(`❌ Error deleting document from ${DOCS_INDEX} index: ${data.message}`);
       }
     }
   } catch (error) {
-    console.error(`\u274c Error deleting document from ${DOCS_INDEX} index: ${error.message}`);
+    console.error(`❌ Error deleting document from ${DOCS_INDEX} index: ${error.message}`);
   }
 }
 
 // Delete related paragraphs
 async function deleteParagraphs() {
   try {
-    console.log(`\ud83d\udd0d Finding paragraphs for document '${docId}' in ${PARAS_INDEX} index...`);
+    console.log(`🔍 Finding paragraphs for document '${docId}' in ${PARAS_INDEX} index...`);
     
     // Use filter to find all paragraphs for this document
     const response = await fetch(`${baseUrl}/indexes/${PARAS_INDEX}/search`, {
@@ -81,7 +81,7 @@ async function deleteParagraphs() {
     
     if (!response.ok) {
       const data = await response.json();
-      console.error(`\u274c Error searching paragraphs: ${data.message}`);
+      console.error(`❌ Error searching paragraphs: ${data.message}`);
       return;
     }
     
@@ -89,11 +89,11 @@ async function deleteParagraphs() {
     const paraIds = searchData.hits.map(hit => hit.File_Para_ID);
     
     if (paraIds.length === 0) {
-      console.log(`\u2139\ufe0f No paragraphs found for document '${docId}'`);
+      console.log(`ℹ️ No paragraphs found for document '${docId}'`);
       return;
     }
     
-    console.log(`\ud83d\uddd1\ufe0f Deleting ${paraIds.length} paragraphs from ${PARAS_INDEX} index...`);
+    console.log(`🗑️ Deleting ${paraIds.length} paragraphs from ${PARAS_INDEX} index...`);
     
     // Delete all found paragraphs
     const deleteResponse = await fetch(`${baseUrl}/indexes/${PARAS_INDEX}/documents/delete-batch`, {
@@ -103,20 +103,20 @@ async function deleteParagraphs() {
     });
     
     if (deleteResponse.ok) {
-      console.log(`\u2705 Paragraphs deleted from ${PARAS_INDEX} index`);
+      console.log(`✅ Paragraphs deleted from ${PARAS_INDEX} index`);
     } else {
       const data = await deleteResponse.json();
-      console.error(`\u274c Error deleting paragraphs: ${data.message}`);
+      console.error(`❌ Error deleting paragraphs: ${data.message}`);
     }
   } catch (error) {
-    console.error(`\u274c Error processing paragraphs: ${error.message}`);
+    console.error(`❌ Error processing paragraphs: ${error.message}`);
   }
 }
 
 // Delete related definitions
 async function deleteDefinitions() {
   try {
-    console.log(`\ud83d\udd0d Finding definitions for document '${docId}' in ${DEFS_INDEX} index...`);
+    console.log(`🔍 Finding definitions for document '${docId}' in ${DEFS_INDEX} index...`);
     
     // Use filter to find all definitions for this document
     const response = await fetch(`${baseUrl}/indexes/${DEFS_INDEX}/search`, {
@@ -130,7 +130,7 @@ async function deleteDefinitions() {
     
     if (!response.ok) {
       const data = await response.json();
-      console.error(`\u274c Error searching definitions: ${data.message}`);
+      console.error(`❌ Error searching definitions: ${data.message}`);
       return;
     }
     
@@ -138,11 +138,11 @@ async function deleteDefinitions() {
     const defIds = searchData.hits.map(hit => hit.File_Defined_Term_Id);
     
     if (defIds.length === 0) {
-      console.log(`\u2139\ufe0f No definitions found for document '${docId}'`);
+      console.log(`ℹ️ No definitions found for document '${docId}'`);
       return;
     }
     
-    console.log(`\ud83d\uddd1\ufe0f Deleting ${defIds.length} definitions from ${DEFS_INDEX} index...`);
+    console.log(`🗑️ Deleting ${defIds.length} definitions from ${DEFS_INDEX} index...`);
     
     // Delete all found definitions
     const deleteResponse = await fetch(`${baseUrl}/indexes/${DEFS_INDEX}/documents/delete-batch`, {
@@ -152,20 +152,20 @@ async function deleteDefinitions() {
     });
     
     if (deleteResponse.ok) {
-      console.log(`\u2705 Definitions deleted from ${DEFS_INDEX} index`);
+      console.log(`✅ Definitions deleted from ${DEFS_INDEX} index`);
     } else {
       const data = await deleteResponse.json();
-      console.error(`\u274c Error deleting definitions: ${data.message}`);
+      console.error(`❌ Error deleting definitions: ${data.message}`);
     }
   } catch (error) {
-    console.error(`\u274c Error processing definitions: ${error.message}`);
+    console.error(`❌ Error processing definitions: ${error.message}`);
   }
 }
 
 // Main execution
 (async () => {
   try {
-    console.log(`\ud83d\udd0d Starting deletion of document '${docId}' and related content...`);
+    console.log(`🔍 Starting deletion of document '${docId}' and related content...`);
     
     // Delete in parallel
     await Promise.all([
@@ -174,9 +174,9 @@ async function deleteDefinitions() {
       deleteDefinitions()
     ]);
     
-    console.log('\u2705 Document deletion completed successfully');
+    console.log('✅ Document deletion completed successfully');
   } catch (error) {
-    console.error(`\u274c Unexpected error: ${error.message}`);
+    console.error(`❌ Unexpected error: ${error.message}`);
     process.exit(1);
   }
 })();

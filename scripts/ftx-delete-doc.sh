@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
             show_usage
             ;;
         *)
-            echo "\u274c Unknown option: $1"
+            echo "❌ Unknown option: $1"
             show_usage
             ;;
     esac
@@ -53,12 +53,12 @@ done
 
 # Check if API key is provided via environment variable
 if [ -z "${MEILISEARCH_KEY}" ]; then
-    echo "\u274c Error: MEILISEARCH_KEY environment variable is required"
+    echo "❌ Error: MEILISEARCH_KEY environment variable is required"
     show_usage
 fi
 
 if [ -z "$DOC_ID" ]; then
-    echo "\u274c Error: Document ID is required"
+    echo "❌ Error: Document ID is required"
     show_usage
 fi
 
@@ -69,9 +69,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 node "$SCRIPT_DIR/ftx-delete-doc.js" --host "$HOST" --port "$PORT" --doc-id "$DOC_ID"
 
 if [ $? -ne 0 ]; then
-    echo "\u274c Error deleting document: $DOC_ID"
+    echo "❌ Error deleting document: $DOC_ID"
     exit 1
 else
-    echo "\u2705 Document successfully deleted: $DOC_ID"
+    echo "✅ Document successfully deleted: $DOC_ID"
     exit 0
 fi

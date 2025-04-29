@@ -16,7 +16,7 @@ const key = process.env.MEILISEARCH_KEY;
 
 // Validate arguments
 if (!key) {
-  console.error('\u274c Error: MEILISEARCH_KEY environment variable is required');
+  console.error('❌ Error: MEILISEARCH_KEY environment variable is required');
   process.exit(1);
 }
 
@@ -35,7 +35,7 @@ const DOCS_INDEX = 'ftx_docs';
 // Function to delete an index
 async function deleteIndex(indexName) {
   try {
-    console.log(`\ud83d\uddd1\ufe0f Deleting '${indexName}' index...`);
+    console.log(`🗑️ Deleting '${indexName}' index...`);
     
     const response = await fetch(`${baseUrl}/indexes/${indexName}`, {
       method: 'DELETE',
@@ -44,20 +44,20 @@ async function deleteIndex(indexName) {
     
     if (response.ok) {
       const data = await response.json();
-      console.log(`\u2705 Index '${indexName}' deleted successfully (Task ID: ${data.taskUid})`);
+      console.log(`✅ Index '${indexName}' deleted successfully (Task ID: ${data.taskUid})`);
       return true;
     } else {
       const data = await response.json();
       if (data.message && data.message.includes('not found')) {
-        console.log(`\u2139\ufe0f Index '${indexName}' does not exist or was already deleted`);
+        console.log(`ℹ️ Index '${indexName}' does not exist or was already deleted`);
         return true;
       } else {
-        console.error(`\u274c Error deleting index '${indexName}': ${data.message}`);
+        console.error(`❌ Error deleting index '${indexName}': ${data.message}`);
         return false;
       }
     }
   } catch (error) {
-    console.error(`\u274c Error deleting index '${indexName}': ${error.message}`);
+    console.error(`❌ Error deleting index '${indexName}': ${error.message}`);
     return false;
   }
 }
@@ -65,7 +65,7 @@ async function deleteIndex(indexName) {
 // Main execution
 (async () => {
   try {
-    console.log('\ud83d\udd0d Starting deletion of all FTX indexes...');
+    console.log('🔍 Starting deletion of all FTX indexes...');
     
     // Delete all three indexes
     const results = await Promise.all([
@@ -76,13 +76,13 @@ async function deleteIndex(indexName) {
     
     // Check if all deletions were successful
     if (results.every(result => result)) {
-      console.log('\u2705 All indexes deleted successfully');
+      console.log('✅ All indexes deleted successfully');
     } else {
-      console.error('\u26a0\ufe0f Some indexes could not be deleted');
+      console.error('⚠️ Some indexes could not be deleted');
       process.exit(1);
     }
   } catch (error) {
-    console.error(`\u274c Unexpected error: ${error.message}`);
+    console.error(`❌ Unexpected error: ${error.message}`);
     process.exit(1);
   }
 })();

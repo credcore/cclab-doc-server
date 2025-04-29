@@ -23,17 +23,17 @@ const key = process.env.MEILISEARCH_KEY;
 
 // Validate arguments
 if (!key) {
-  console.error('u274c Error: MEILISEARCH_KEY environment variable is required');
+  console.error('\u274c Error: MEILISEARCH_KEY environment variable is required');
   process.exit(1);
 }
 
 if (!file) {
-  console.error('u274c Error: Input file is required');
+  console.error('\u274c Error: Input file is required');
   process.exit(1);
 }
 
 if (!fs.existsSync(file)) {
-  console.error(`u274c Error: File '${file}' does not exist`);
+  console.error(`\u274c Error: File '${file}' does not exist`);
   process.exit(1);
 }
 
@@ -86,7 +86,7 @@ function convertToValidDocId(inputString) {
 // Create an index if it doesn't exist
 async function createIndex(indexName, primaryKey) {
   try {
-    console.log(`ud83dudce6 Creating/validating index '${indexName}'...`);
+    console.log(`\ud83d\udce6 Creating/validating index '${indexName}'...`);
     
     const response = await fetch(`${baseUrl}/indexes/${indexName}`, {
       method: 'GET',
@@ -94,7 +94,7 @@ async function createIndex(indexName, primaryKey) {
     });
     
     if (response.ok) {
-      console.log(`u2705 Index '${indexName}' already exists`);
+      console.log(`\u2705 Index '${indexName}' already exists`);
       return;
     }
     
@@ -110,13 +110,13 @@ async function createIndex(indexName, primaryKey) {
     const data = await createResponse.json();
     
     if (createResponse.ok) {
-      console.log(`u2705 Index '${indexName}' created successfully`);
+      console.log(`\u2705 Index '${indexName}' created successfully`);
     } else {
-      console.error(`u274c Error creating index '${indexName}': ${data.message}`);
+      console.error(`\u274c Error creating index '${indexName}': ${data.message}`);
       process.exit(1);
     }
   } catch (error) {
-    console.error(`u274c Error accessing Meilisearch: ${error.message}`);
+    console.error(`\u274c Error accessing Meilisearch: ${error.message}`);
     process.exit(1);
   }
 }
@@ -151,9 +151,9 @@ async function configureIndex(indexName, searchable, filterable, sortable) {
       });
     }
     
-    console.log(`u2699ufe0f Index '${indexName}' configured successfully`);
+    console.log(`\u2699\ufe0f Index '${indexName}' configured successfully`);
   } catch (error) {
-    console.error(`u274c Error configuring index '${indexName}': ${error.message}`);
+    console.error(`\u274c Error configuring index '${indexName}': ${error.message}`);
   }
 }
 
@@ -161,14 +161,14 @@ async function configureIndex(indexName, searchable, filterable, sortable) {
 async function processJsonlFile() {
   try {
     const fileName = path.basename(file);
-    console.log(`ud83dudcc4 Reading file: ${fileName}`);
+    console.log(`\ud83d\udcc4 Reading file: ${fileName}`);
     
     // Read file line by line
     const content = fs.readFileSync(file, 'utf8');
     const lines = content.split('\n').filter(line => line.trim());
     
     if (lines.length === 0) {
-      console.error('u274c No valid JSON lines found in file');
+      console.error('\u274c No valid JSON lines found in file');
       return;
     }
     
@@ -177,7 +177,7 @@ async function processJsonlFile() {
     const definitions = {};
     const uniqueDocuments = new Map();
     
-    console.log(`ud83dudd0d Processing ${lines.length} paragraphs...`);
+    console.log(`\ud83d\udd0d Processing ${lines.length} paragraphs...`);
     
     for (const line of lines) {
       try {
@@ -219,11 +219,11 @@ async function processJsonlFile() {
           definitions[para.Defined_Term].push(para);
         }
       } catch (error) {
-        console.error(`u274c Error parsing JSON line: ${error.message}`);
+        console.error(`\u274c Error parsing JSON line: ${error.message}`);
       }
     }
     
-    console.log(`ud83dudcca Found ${paragraphs.length} paragraphs, ${Object.keys(definitions).length} defined terms, ${uniqueDocuments.size} documents`);
+    console.log(`\ud83d\udcca Found ${paragraphs.length} paragraphs, ${Object.keys(definitions).length} defined terms, ${uniqueDocuments.size} documents`);
     
     // Create and configure indexes
     await createIndex(PARAS_INDEX, 'File_Para_ID');
@@ -251,7 +251,7 @@ async function processJsonlFile() {
     );
     
     // Process and upload paragraphs
-    console.log(`ud83dudce4 Uploading paragraphs to ${PARAS_INDEX}...`);
+    console.log(`\ud83d\udce4 Uploading paragraphs to ${PARAS_INDEX}...`);
     const parasResponse = await fetch(`${baseUrl}/indexes/${PARAS_INDEX}/documents`, {
       method: 'POST',
       headers,
@@ -260,14 +260,14 @@ async function processJsonlFile() {
     
     if (!parasResponse.ok) {
       const error = await parasResponse.json();
-      console.error(`u274c Error uploading paragraphs: ${error.message}`);
+      console.error(`\u274c Error uploading paragraphs: ${error.message}`);
     } else {
-      console.log(`u2705 Paragraphs uploaded successfully`);
+      console.log(`\u2705 Paragraphs uploaded successfully`);
     }
     
     // Process and upload definitions
     if (Object.keys(definitions).length > 0) {
-      console.log(`ud83dudce4 Processing and uploading definitions to ${DEFS_INDEX}...`);
+      console.log(`\ud83d\udce4 Processing and uploading definitions to ${DEFS_INDEX}...`);
       
       const processedDefs = [];
       
@@ -308,15 +308,15 @@ async function processJsonlFile() {
       
       if (!defsResponse.ok) {
         const error = await defsResponse.json();
-        console.error(`u274c Error uploading definitions: ${error.message}`);
+        console.error(`\u274c Error uploading definitions: ${error.message}`);
       } else {
-        console.log(`u2705 Definitions uploaded successfully`);
+        console.log(`\u2705 Definitions uploaded successfully`);
       }
     }
     
     // Upload document info
     if (uniqueDocuments.size > 0) {
-      console.log(`ud83dudce4 Uploading document information to ${DOCS_INDEX}...`);
+      console.log(`\ud83d\udce4 Uploading document information to ${DOCS_INDEX}...`);
       
       const documents = Array.from(uniqueDocuments.values());
       const docsResponse = await fetch(`${baseUrl}/indexes/${DOCS_INDEX}/documents`, {
@@ -327,15 +327,15 @@ async function processJsonlFile() {
       
       if (!docsResponse.ok) {
         const error = await docsResponse.json();
-        console.error(`u274c Error uploading documents: ${error.message}`);
+        console.error(`\u274c Error uploading documents: ${error.message}`);
       } else {
-        console.log(`u2705 Document information uploaded successfully`);
+        console.log(`\u2705 Document information uploaded successfully`);
       }
     }
     
-    console.log('u2705 File processed successfully');
+    console.log('\u2705 File processed successfully');
   } catch (error) {
-    console.error(`u274c Error processing file: ${error.message}`);
+    console.error(`\u274c Error processing file: ${error.message}`);
     process.exit(1);
   }
 }
@@ -345,7 +345,7 @@ async function processJsonlFile() {
   try {
     await processJsonlFile();
   } catch (error) {
-    console.error(`u274c Unexpected error: ${error.message}`);
+    console.error(`\u274c Unexpected error: ${error.message}`);
     process.exit(1);
   }
 })();

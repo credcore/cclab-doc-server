@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # ftx-delete-indexes.sh - Delete all FTX indexes from Meilisearch
 
 # Default values, prioritizing environment variables if available
