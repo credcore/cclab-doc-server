@@ -1,0 +1,5 @@
+{
+  "name": "cclab-doc-server",
+  "private": true,
+  "type": "module"
+}
